@@ -2,9 +2,9 @@
   "name": "cepamafaute-backend",
   "version": "1.0.0",
   "description": "API Backend pour le générateur d'excuses professionnelles Cepamafaute",
-  "main": "src/index.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node src/server.js",
     "test": "node --test test/index.test.js"
   },
   "dependencies": {

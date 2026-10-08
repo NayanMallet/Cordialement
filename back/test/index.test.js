@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const http = require('node:http');
-const { app, server, excuses } = require('../src/index.js');
+const { app, server, excuses } = require('../src/server.js');
 
 const makeRequest = (path) => {
   return new Promise((resolve, reject) => {
