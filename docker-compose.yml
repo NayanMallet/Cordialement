@@ -4,7 +4,7 @@ services:
     build:
       context: ./back
       dockerfile: Dockerfile
-    container_name: cepamafaute-backend
+    container_name: cordialement-backend
     # Gestion propre des signaux SIGTERM/SIGINT via Tini (PID 1)
     init: true
     restart: unless-stopped
@@ -25,14 +25,14 @@ services:
           cpus: '0.50'
           memory: 128M
     networks:
-      - cepamafaute-network
+      - cordialement-network
 
   # Microservice Frontend - Vue 3 / Nginx
   frontend:
     build:
       context: ./front
       dockerfile: Dockerfile
-    container_name: cepamafaute-frontend
+    container_name: cordialement-frontend
     # Gestion propre des signaux SIGTERM via Tini (PID 1)
     init: true
     restart: unless-stopped
@@ -44,14 +44,14 @@ services:
           cpus: '0.20'
           memory: 64M
     networks:
-      - cepamafaute-network
+      - cordialement-network
 
   # Reverse Proxy Nginx - Point d'entrée unique de l'architecture
   proxy:
     build:
       context: ./proxy
       dockerfile: Dockerfile
-    container_name: cepamafaute-proxy
+    container_name: cordialement-proxy
     # Gestion propre des signaux SIGTERM via Tini (PID 1)
     init: true
     restart: unless-stopped
@@ -68,9 +68,9 @@ services:
           cpus: '0.20'
           memory: 64M
     networks:
-      - cepamafaute-network
+      - cordialement-network
 
 networks:
   # Réseau privé Docker de type bridge isolant les conteneurs
-  cepamafaute-network:
+  cordialement-network:
     driver: bridge

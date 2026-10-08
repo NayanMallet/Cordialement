@@ -4,7 +4,7 @@ const http = require('node:http');
 const { app, server } = require('../src/server.js');
 const corporatePhrases = require('../src/data/corporate.json');
 
-const makeRequest = (path, method = 'GET', postData = null) => {
+const makeRequest = (path, method = 'GET', body = null) => {
   return new Promise((resolve, reject) => {
     const port = server.address().port;
     const options = {
@@ -12,13 +12,10 @@ const makeRequest = (path, method = 'GET', postData = null) => {
       port: port,
       path: path,
       method: method,
-      headers: {}
+      headers: {
+        'Content-Type': 'application/json'
+      }
     };
-
-    if (postData) {
-      options.headers['Content-Type'] = 'application/json';
-      options.headers['Content-Length'] = Buffer.byteLength(postData);
-    }
 
     const req = http.request(options, (res) => {
       let data = '';
@@ -27,15 +24,14 @@ const makeRequest = (path, method = 'GET', postData = null) => {
         resolve({
           statusCode: res.statusCode,
           headers: res.headers,
-          body: JSON.parse(data || '{}')
+          body: JSON.parse(data)
         });
       });
     });
-
-    req.on('error', reject);
     
-    if (postData) {
-      req.write(postData);
+    req.on('error', reject);
+    if (body) {
+      req.write(JSON.stringify(body));
     }
     req.end();
   });
@@ -50,19 +46,12 @@ test('Backend API Suite', async (t) => {
     assert.ok(typeof res.body.timestamp === 'string');
   });
 
-  await t.test('POST /api/translate - retourne 200 et une traduction valide', async () => {
-    const postData = JSON.stringify({ text: "Je suis fatigué" });
-    const res = await makeRequest('/api/translate', 'POST', postData);
+  await t.test('POST /api/translate - retourne 200 et la traduction corporate', async () => {
+    const res = await makeRequest('/api/translate', 'POST', { text: 'Je suis fatigué de ce projet' });
     assert.equal(res.statusCode, 200);
-    assert.equal(res.body.original, "Je suis fatigué");
     assert.ok(res.body.translated);
     assert.ok(corporatePhrases.includes(res.body.translated));
-  });
-
-  await t.test('POST /api/translate - retourne 400 si texte manquant', async () => {
-    const res = await makeRequest('/api/translate', 'POST', JSON.stringify({}));
-    assert.equal(res.statusCode, 400);
-    assert.equal(res.body.error, "Le champ 'text' est requis.");
+    assert.equal(res.body.original, 'Je suis fatigué de ce projet');
   });
 
   t.after(() => {

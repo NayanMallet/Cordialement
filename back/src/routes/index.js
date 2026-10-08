@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getHealth, getRandomExcuse } = require('../controllers/excuse.controller.js');
+const { getHealth, postTranslate } = require('../controllers/translate.controller.js');
 
 router.get('/health', getHealth);
-router.get('/excuse', getRandomExcuse);
+router.post('/translate', postTranslate);
 
 module.exports = router;

@@ -1,7 +1,7 @@
 {
-  "name": "cepamafaute-backend",
+  "name": "cordialement-backend",
   "version": "1.0.0",
-  "description": "API Backend pour le générateur d'excuses professionnelles Cepamafaute",
+  "description": "API Backend pour le traducteur corporate parodique Cordialement",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
