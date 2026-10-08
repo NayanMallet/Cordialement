@@ -6,8 +6,6 @@ FROM node:20-alpine AS build-stage
 
 # 1. Structure de dossiers et Dépendances
 WORKDIR /app
-
-# copie package.json et package-lock.json opti la mise en cache
 COPY package*.json ./
 RUN npm install
 
@@ -21,15 +19,17 @@ RUN npm run build
 # image Nginx Alpine (20-30 Mo) pour servir les fichiers statiques de manière ultra-rapide
 FROM nginx:alpine AS production-stage
 
-# 4. Manipulation OS : Nettoyage de Nginx (supp fichiers HTML par défaut et configurations de bienvenue)
+# 3. Manipulation OS : Nettoyage de Nginx (supp fichiers HTML par défaut et configurations de bienvenue)
+# Suppression des fichiers HTML par défaut pour n'exposer que notre application
 RUN rm -rf /usr/share/nginx/html/* /etc/nginx/conf.d/default.conf
 
-# 5. Copie des assets compilés et de la configuration
+# 4. Copie des assets compilés et de la configuration du proxy
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# 6. Exposition du port
+# 5. Exposition du port
 EXPOSE 80
 
-# 7. Lancement
-CMD ["nginx", "-g", "daemon off;"]
+# 6. Entrypoint
+ENTRYPOINT ["nginx"]
+CMD ["-g", "daemon off;"]

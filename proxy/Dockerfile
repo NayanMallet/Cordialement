@@ -1,13 +1,15 @@
+# 1. Image de base OS minimaliste
 FROM nginx:alpine
 
-# 1. Manipulation OS : Nettoyage de la configuration par défaut
+# 2. Manipulation OS : Nettoyage de la configuration par défaut
 RUN rm -rf /etc/nginx/conf.d/default.conf
 
-# 2. Configuration du Reverse Proxy
+# 3. Configuration de notre Reverse Proxy
 COPY default.conf /etc/nginx/conf.d/default.conf
 
-# 3. Exposition du port
+# 4. Exposition du port
 EXPOSE 80
 
-# 4. Lancement de Nginx au premier plan
-CMD ["nginx", "-g", "daemon off;"]
+# 5. Lancement de Nginx au premier plan
+ENTRYPOINT ["nginx"]
+CMD ["-g", "daemon off;"]
